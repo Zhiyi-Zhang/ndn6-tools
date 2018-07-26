@@ -1,4 +1,5 @@
 #include <ndn-cxx/mgmt/nfd/controller.hpp>
+#include <ndn-cxx/face.hpp>
 #include <ndn-cxx/security/command-interest-signer.hpp>
 #include <ndn-cxx/security/signing-helpers.hpp>
 #include <ndn-cxx/util/time-unit-test-clock.hpp>
@@ -6,6 +7,8 @@
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <boost/program_options/parsers.hpp>
+
+#include <iostream>
 
 namespace ndn {
 namespace register_prefix_cmd {
@@ -27,6 +30,7 @@ main(int argc, char** argv)
 {
   Name prefix;
   Name commandPrefix("/localhop/nfd");
+  Face face;
   int faceId = -1;
   int origin = 0;
   security::SigningInfo si;
@@ -91,7 +95,8 @@ main(int argc, char** argv)
   Interest interest = cis.makeCommandInterest(command->getRequestName(commandPrefix, params), si);
 
   Block wire = interest.wireEncode();
-  std::cout.write(reinterpret_cast<const char*>(wire.wire()), wire.size());
+  face.expressInterest(interest, nullptr, nullptr, nullptr);
+  face.processEvents();
   return 0;
 }
 
