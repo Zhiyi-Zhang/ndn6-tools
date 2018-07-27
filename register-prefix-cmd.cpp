@@ -89,6 +89,7 @@ main(int argc, char** argv)
       (vm.count("capture") > 0 ? nfd::ROUTE_FLAG_CAPTURE : 0)
     );
   }
+  params.setExpirationPeriod(time::days(30));
 
   KeyChain keyChain;
   security::CommandInterestSigner cis(keyChain);
